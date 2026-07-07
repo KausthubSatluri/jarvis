@@ -1,9 +1,11 @@
 import type { ReasoningLevel, ThinkLevel } from "../auto-reply/thinking.js";
 import type { MemoryCitationsMode } from "../config/types.memory.js";
+import type { AutonomyPolicies } from "./autonomy-policies.js";
 import type { ResolvedTimeFormat } from "./date-time.js";
 import type { EmbeddedContextFile } from "./pi-embedded-helpers.js";
 import { SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
 import { listDeliverableMessageChannels } from "../utils/message-channel.js";
+import { buildJarvisPromptAdditions } from "./jarvis-prompt-builder.js";
 
 /**
  * Controls which hardcoded sections are included in the system prompt.
@@ -214,6 +216,8 @@ export function buildAgentSystemPrompt(params: {
     channel: string;
   };
   memoryCitationsMode?: MemoryCitationsMode;
+  /** Jarvis autonomy policies (from AUTONOMY.yaml) */
+  jarvisAutonomyPolicies?: AutonomyPolicies;
 }) {
   const coreToolSummaries: Record<string, string> = {
     read: "Read file contents",
@@ -514,6 +518,11 @@ export function buildAgentSystemPrompt(params: {
     }),
     ...buildVoiceSection({ isMinimal, ttsHint: params.ttsHint }),
   ];
+
+  // Add Jarvis autonomy section if policies are provided
+  if (params.jarvisAutonomyPolicies && !isMinimal) {
+    lines.push(buildJarvisPromptAdditions(params.jarvisAutonomyPolicies));
+  }
 
   if (extraSystemPrompt) {
     // Use "Subagent Context" header for minimal mode (subagents), otherwise "Group Chat Context"

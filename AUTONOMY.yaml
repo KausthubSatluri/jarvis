@@ -1,0 +1,199 @@
+# Jarvis Autonomy Policies
+# Derived from mock specs and example conversations
+
+version: "1.0"
+
+# Domain-specific autonomy policies
+domains:
+  # Email operations (from email/communication examples)
+  email:
+    autonomous_operations:
+      - read
+      - search
+      - draft
+      - categorize
+      - archive
+    requires_approval:
+      - send
+      - delete_batch
+      - forward_external
+    checkpoint_thresholds:
+      item_count: 50
+      time_minutes: 5
+
+  # File operations
+  file_operations:
+    autonomous_operations:
+      - create
+      - read
+      - modify_in_workspace
+      - organize
+      - search
+    requires_approval:
+      - delete
+      - move_to_trash
+      - modify_permissions
+      - operations_outside_workspace
+    checkpoint_thresholds:
+      item_count: 50
+      size_mb: 100
+
+  # Data analysis (from metric tracking examples)
+  data_analysis:
+    autonomous: true
+    checkpoint_triggers:
+      - item_count > 100
+      - estimated_time > 10
+      - requires_subjective_judgment
+    auto_report_progress: true
+
+  # Code generation (from trading bot example)
+  code_generation:
+    autonomous: when_scope_clear
+    checkpoint_triggers:
+      - affects_multiple_modules
+      - modifies_core_logic
+      - no_test_coverage
+    requires_approval:
+      - when_tests_fail
+      - destructive_refactoring
+
+  # Research and information gathering (from market research example)
+  research:
+    autonomous: true
+    checkpoint_triggers:
+      - scope_expansion
+      - time_exceeds_estimate
+      - requires_synthesis
+    auto_save_sources: true
+
+  # Problem generation (from probability practice example)
+  problem_generation:
+    autonomous: true
+    default_behavior: execute_immediately
+    # Low risk, clear scope - always autonomous
+
+  # Photography/media organization (from photography workflow example)
+  media_organization:
+    autonomous_operations:
+      - read
+      - analyze
+      - draft_taxonomy
+    requires_approval:
+      - bulk_rename
+      - bulk_move
+      - delete
+    checkpoint_thresholds:
+      item_count: 30 # "Tag 30 samples first"
+      time_minutes: 5
+    default_strategy: batch_sample
+
+  # Language learning (from Chinese learning example)
+  language_learning:
+    autonomous: true
+    default_behavior: generate_and_present
+    # Always autonomous - low risk educational content
+
+  # Messaging (WhatsApp-specific for checkpoint integration)
+  messaging:
+    autonomous_operations:
+      - read
+      - search
+      - draft
+      - mark_read
+    requires_approval:
+      - send
+      - delete
+      - leave_channel
+    checkpoint_channel: whatsapp
+
+# Global constraints
+global:
+  max_autonomous_item_count: 200
+  max_autonomous_time_minutes: 30
+  max_file_size_mb: 500
+
+  always_require_approval:
+    - financial_transactions
+    - account_deletions
+    - bulk_message_sending
+    - system_configuration
+    - public_posting
+
+  always_autonomous:
+    - reading_data
+    - local_computation
+    - draft_creation
+    - problem_generation
+    - explanation_requests
+
+# Checkpoint strategies
+checkpoint_strategies:
+  batch_sample:
+    sample_percentage: 0.15
+    min_sample_size: 10
+    max_sample_size: 50
+    require_explicit_approval: true
+
+  progress_reporting:
+    interval_percentage: 0.1
+    min_interval_items: 10
+    include_time_estimate: true
+    allow_interruption: true
+
+  time_based:
+    report_every_minutes: 5
+    max_time_before_checkin: 15
+
+# Strategy proposal templates
+strategy_templates:
+  large_batch_processing:
+    trigger:
+      - item_count > 100
+    proposal: "Want me to process {sample_size} samples first for your approval?"
+    strategies:
+      - name: conservative
+        description: Process sample batch, validate, then continue
+      - name: progressive
+        description: Process all with progress reports every {interval} items
+
+  ambiguous_scope:
+    trigger:
+      - confidence < 0.7
+      - unclear_requirements
+    proposal: "I can approach this as: (a) {option_1}, (b) {option_2}. Which direction?"
+
+  subjective_judgment:
+    trigger:
+      - requires_manual_judgment
+      - quality_thresholds_unclear
+    proposal: "This requires judgment calls. Should I {suggested_approach}?"
+    strategies:
+      - name: sample_review
+        description: Process sample for quality review first
+      - name: explicit_criteria
+        description: Define explicit criteria together first
+
+# User preferences
+user_preferences:
+  verbosity: minimal
+  explanation_mode: on_request
+  progress_updates: important_only
+  default_stance: conservative
+  checkpoint_frequency: medium
+  preferred_checkpoint_style: batch_sample
+
+# WhatsApp integration settings
+whatsapp:
+  checkpoint_enabled: true
+  approval_timeout_minutes: 30
+  progress_message_format: concise
+  send_completion_summary: true
+
+# Policy learning settings
+policy_learning:
+  enabled: true
+  min_observations_before_suggestion: 5
+  suggestion_cooldown_hours: 24
+  auto_implement: false # Always require user review
+  log_all_decisions: true
