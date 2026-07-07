@@ -1,3 +1,22 @@
+# Jarvis — Bounded-Autonomy Assistant (fork of OpenClaw)
+
+This is my fork of [OpenClaw](https://github.com/openclaw/openclaw) that adds a **bounded-autonomy layer**: Jarvis executes tasks autonomously within explicit, per-domain policy boundaries, checkpoints for approval on risky operations, and learns policies from user feedback over time.
+
+**My additions (everything else below is upstream OpenClaw):**
+
+- `AUTONOMY.yaml` — declarative per-domain autonomy policies (what's autonomous vs. approval-gated, with checkpoint thresholds)
+- `SOUL.md` — the Jarvis persona: a "quiet executor" that closes the execution gap while leaving decisions to the user
+- `src/agents/autonomy-policies.ts` — loads and enforces the policy config
+- `src/agents/decision-boundary.ts` (+ tests) — classifies actions as autonomous, checkpoint-required, or forbidden
+- `src/agents/checkpoint-executor.ts` — pauses execution and requests approval at policy boundaries
+- `src/agents/policy-learner.ts` (+ tests) — adjusts policies from approval/rejection history
+- `src/agents/jarvis.ts`, `jarvis-prompt-builder.ts`, `task-context.ts` — the Jarvis agent wiring
+- `src/agents/whatsapp-checkpoint-adapter.ts` — approval checkpoints delivered over WhatsApp
+
+Original OpenClaw README follows.
+
+---
+
 # 🦞 OpenClaw — Personal AI Assistant
 
 <p align="center">
